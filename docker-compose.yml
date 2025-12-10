@@ -15,21 +15,16 @@ services:
     networks:
       - aspporcelette-network
 
-
   backend:
     build:
-      context: ./aspPorcelette
+      context: ./ASPPorcelette.API # ✅ CORRECTION 1 : Le chemin correct vers le code
       dockerfile: Dockerfile
     container_name: aspporcelette-backend
-  
-    ports:
-      - "5070:8080"
+    # ports: # Ligne retirée car inutile et source de confusion
+    #   - "5070:8080" 
     environment:
-      # Ligne 1 : ASPNETCORE_ENVIRONMENT
       - ASPNETCORE_ENVIRONMENT=Production
-      # Ligne 2 : Correction de l'URL (suppression de l'espace 'http: //')
       - ASPNETCORE_URLS=http://+:8080
-      # Ligne 3 : Encapsulation de la chaîne de connexion dans des guillemets simples pour éviter les erreurs de parsing YAML
       - 'ConnectionStrings__DefaultConnection=Server=db,1433;Database=5070;User Id=sa;Password=YourStrong!Passw0rd123;TrustServerCertificate=True;MultipleActiveResultSets=true'
     networks:
       - aspporcelette-network
