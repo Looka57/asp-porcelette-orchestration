@@ -17,7 +17,7 @@ services:
 
   backend:
     build:
-      context: ./ASPPorcelette # ✅ CORRECTION 1 : Le chemin correct vers le code
+      context: ./aspPorcelette    # ✅ CORRECTION 1 : Le chemin correct vers le code
       dockerfile: Dockerfile
     container_name: aspporcelette-backend
     # ports: # Ligne retirée car inutile et source de confusion
