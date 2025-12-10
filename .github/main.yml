@@ -1,0 +1,55 @@
+# .github/workflows/main.yml
+name: CI Build et Push Images Docker
+
+on:
+  push:
+    branches:
+      - main  # Déclenche sur chaque push vers la branche 'main'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: ⚙️ Checkout du code
+        uses: actions/checkout@v4
+
+      - name: 🏗️ Setup Docker Buildx (Nécessaire pour les builds multi-plateformes)
+        uses: docker/setup-buildx-action@v3
+        
+      - name: 🔑 Login au Docker Hub
+        uses: docker/login-action@v3
+        with:
+          # Les secrets doivent être configurés dans les réglages de votre dépôt GitHub
+          username: ${{ secrets.DOCKER_USERNAME }} 
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          
+      - name: 🏷️ Définir les Tags pour les Images
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          # Utilise le hash du commit de 8 caractères comme tag de version (ex: 1a2b3c4d)
+          images: votre_nom_utilisateur/aspporcelette
+          tags: |
+            type=sha,format=short
+            
+      # --- JOB 1 : Construction et Push du BACKEND ---
+      - name: 🚀 Build et Push l'image BACKEND
+        uses: docker/build-push-action@v5
+        with:
+          context: . # Contexte à la racine du dépôt
+          file: ./aspPorcelette/Dockerfile # Chemin vers le Dockerfile de l'API
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}-backend # Tag final: 1a2b3c4d-backend
+          
+      # --- JOB 2 : Construction et Push du FRONTEND ---
+      - name: 🚀 Build et Push l'image FRONTEND
+        uses: docker/build-push-action@v5
+        with:
+          context: ./asp-porcelette-front # Contexte limité au dossier du frontend
+          file: ./asp-porcelette-front/Dockerfile # Chemin vers le Dockerfile du frontend
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}-frontend # Tag final: 1a2b3c4d-frontend
+          
+      - name: ✅ CI terminée
+        run: echo "Images taguées avec ${{ steps.meta.outputs.tags }} et poussées sur Docker Hub."
