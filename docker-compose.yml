@@ -37,7 +37,7 @@ services:
     container_name: aspporcelette-frontend
     # Le frontend est exposé sur le port 8080 de l'hôte (votre machine)
     ports:
-      - "8080:80"
+      - "80:80"
     depends_on:
       - backend
     networks:
