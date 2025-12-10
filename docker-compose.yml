@@ -40,9 +40,9 @@ services:
       context: ./asp-porcelette-front
       dockerfile: Dockerfile
     container_name: aspporcelette-frontend
-    # Le frontend est exposé sur le port 8080 de l'hôte (votre machine)
+    # Le frontend est exposé sur le port 8080 de l'hôte (votre machine) test novea port
     ports:
-      - "80:80"
+      - "80:80" 
     depends_on:
       - backend
     networks:
