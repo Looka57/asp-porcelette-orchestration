@@ -17,20 +17,26 @@ services:
 
   backend:
     build:
-      context: ./aspPorcelette    # ✅ CORRECTION 1 : Le chemin correct vers le code
+      context: ./aspPorcelette 
       dockerfile: Dockerfile
     container_name: aspporcelette-backend
-    # ports: # Ligne retirée car inutile et source de confusion
-    #   - "5070:8080" 
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8080
+      # NOTE: Si la base de données s'appelle '5070', cela devrait fonctionner. 
+      # Par convention, le nom de la base est souvent le nom de l'application.
       - 'ConnectionStrings__DefaultConnection=Server=db,1433;Database=5070;User Id=sa;Password=YourStrong!Passw0rd123;TrustServerCertificate=True;MultipleActiveResultSets=true'
     depends_on:
       db:
         condition: service_started
-    # 🚨 AJOUT DE LA COMMANDE POUR UN DÉLAI
-    command: /bin/sh -c "sleep 15 && dotnet aspPorcelette.dll"
+    
+    # 🚨 CORRECTION & AJOUT DE VOLUME POUR LA PERSISTANCE
+    volumes:
+      # Volume nommé pour stocker les images de manière permanente.
+      # Le chemin à droite est le chemin d'enregistrement des images dans votre code C#.
+      - ./aspPorcelette/wwwroot/images/actualites:/app/wwwroot/images/actualites
+      
+    command: /bin/sh -c "sleep 15 && dotnet aspPorcelette.API.dll" # 🚨 J'ai corrigé le nom de la DLL pour utiliser 'aspPorcelette.API.dll' qui est le plus probable
 
     networks:
       - aspporcelette-network
@@ -41,7 +47,6 @@ services:
       context: ./asp-porcelette-front
       dockerfile: Dockerfile
     container_name: aspporcelette-frontend
-    # Le frontend est exposé sur le port 8080 de l'hôte (votre machine)
     ports:
       - "8080:80"
     depends_on:
@@ -52,6 +57,7 @@ services:
 
 volumes:
   sqldata:
+
 
 networks:
   aspporcelette-network:
