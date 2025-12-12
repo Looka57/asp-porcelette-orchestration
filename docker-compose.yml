@@ -26,6 +26,12 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8080
       - 'ConnectionStrings__DefaultConnection=Server=db,1433;Database=5070;User Id=sa;Password=YourStrong!Passw0rd123;TrustServerCertificate=True;MultipleActiveResultSets=true'
+    depends_on:
+      db:
+        condition: service_started
+    # 🚨 AJOUT DE LA COMMANDE POUR UN DÉLAI
+    command: /bin/sh -c "sleep 15 && dotnet aspPorcelette.dll"
+
     networks:
       - aspporcelette-network
     restart: unless-stopped
