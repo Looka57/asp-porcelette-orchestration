@@ -35,6 +35,8 @@ services:
       # Volume nommé pour stocker les images de manière permanente.
       # Le chemin à droite est le chemin d'enregistrement des images dans votre code C#.
       - ./aspPorcelette/wwwroot/images/actualites:/app/wwwroot/images/actualites
+       # ✅ AJOUT : Volume pour les photos de profil
+      - ./aspPorcelette/wwwroot/images/profiles:/app/wwwroot/images/profiles
       
     command: /bin/sh -c "sleep 15 && dotnet aspPorcelette.API.dll" # 🚨 J'ai corrigé le nom de la DLL pour utiliser 'aspPorcelette.API.dll' qui est le plus probable
 
